@@ -1,35 +1,20 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
+import ToolGuide from "./ToolGuide";
+import { I18nProvider, useI18n } from "./i18n";
+import { SettingsProvider, useSettings } from "./settings";
+import { getToolGroups } from "./toolRegistry";
 import {
 	LayoutGrid,
-	QrCode,
-	Scan,
-	Link as LinkIcon,
 	FileText,
-	Globe,
-	Shield,
-	Key,
-	Mail,
-	Upload,
 	Coins,
 	Menu,
 	X,
 	Heart,
 	Copy,
-	Home,
 	Check,
-	KeyRound,
-	Search,
-	Smartphone,
-	Binary,
-	Image as ImageIcon,
-	Filter,
-	Calculator,
-	User,
-	CreditCard,
+	Sliders,
+	Star,
 	Clock,
-	FileJson,
-	Sparkles,
-	GitCompare,
 } from "lucide-react";
 
 // --- CUSTOM ROUTER IMPLEMENTATION ---
@@ -118,6 +103,7 @@ const DonateModal = ({
 	onClose: () => void;
 }) => {
 	const [copied, setCopied] = useState(false);
+	const { t } = useI18n();
 
 	if (!isOpen) return null;
 
@@ -153,7 +139,7 @@ const DonateModal = ({
 				{/* Header */}
 				<div className="p-6 border-b border-dark-700 flex justify-between items-center bg-dark-800/50">
 					<h2 className="text-2xl font-bold text-white flex items-center gap-2">
-						Support{" "}
+						{t("Support", "Ủng hộ")}{" "}
 						<span className="text-neon-purple">AT Tools</span>{" "}
 						<Heart
 							className="text-neon-pink fill-neon-pink animate-pulse"
@@ -184,13 +170,13 @@ const DonateModal = ({
 							<div className="flex items-center gap-3 mb-2 text-neon-green">
 								<Coins size={24} />
 								<h3 className="text-lg font-bold">
-									Banking Transfer
+									{t("Banking Transfer", "Chuyển khoản")}
 								</h3>
 							</div>
 
 							<div className="bg-dark-800 p-3 rounded-xl border border-dark-700">
 								<p className="text-xs text-gray-500 uppercase mb-1">
-									Bank Name
+									{t("Bank Name", "Ngân hàng")}
 								</p>
 								<p className="font-bold text-white">
 									MBBank (Quân Đội)
@@ -201,7 +187,7 @@ const DonateModal = ({
 								className="bg-dark-800 p-3 rounded-xl border border-dark-700 group relative cursor-pointer hover:border-neon-green transition-colors"
 								onClick={copy}>
 								<p className="text-xs text-gray-500 uppercase mb-1">
-									Account Number
+									{t("Account Number", "Số tài khoản")}
 								</p>
 								<div className="flex items-center justify-between">
 									<p className="font-mono text-xl text-neon-green font-bold tracking-wider">
@@ -222,7 +208,7 @@ const DonateModal = ({
 
 							<div className="bg-dark-800 p-3 rounded-xl border border-dark-700">
 								<p className="text-xs text-gray-500 uppercase mb-1">
-									Account Name
+									{t("Account Name", "Chủ tài khoản")}
 								</p>
 								<p className="font-bold text-white">
 									{BANK_INFO.accountName}
@@ -233,7 +219,7 @@ const DonateModal = ({
 
 					<div className="mt-8 text-center">
 						<p className="text-sm text-gray-500">
-							Thank you for keeping the tools alive! ☕
+							{t("Thank you for keeping the tools alive! ☕", "Cảm ơn bạn đã giúp duy trì công cụ! ☕")}
 						</p>
 					</div>
 				</div>
@@ -248,69 +234,16 @@ interface LayoutProps {
 	children: React.ReactNode;
 }
 
-const navGroups = [
-	{
-		title: "Main",
-		items: [{ path: "/", name: "Dashboard", icon: LayoutGrid }],
-	},
-
-	// --- Utilities ---
-	{
-		title: "Utilities",
-		items: [
-			{ path: "/fake-identity", name: "Fake Identity", icon: User },
-			{ path: "/cc-gen", name: "CC Generator", icon: CreditCard },
-			{ path: "/global-time", name: "Global Time", icon: Clock },
-			{ path: "/ua-gen", name: "User Agent Gen", icon: Smartphone },
-			{ path: "/diff", name: "Diff Checker", icon: GitCompare },
-			{ path: "/json-format", name: "JSON/XML Format", icon: FileJson },
-
-			{ path: "/extractor", name: "List Extractor", icon: Filter },
-			{ path: "/text-tools", name: "Text Obfuscator", icon: Binary },
-			{ path: "/fancy-text", name: "Fancy Text", icon: Sparkles },
-			{ path: "/image-tools", name: "Image Tools", icon: ImageIcon },
-			{ path: "/crypto", name: "Crypto Convert", icon: Calculator },
-			{ path: "/notepad", name: "Notepad", icon: FileText },
-			{ path: "/temp-mail", name: "Temp Mail", icon: Mail },
-			{ path: "/upload", name: "File Upload", icon: Upload },
-		],
-	},
-
-	// --- Network ---
-	{
-		title: "Network",
-		items: [
-			{ path: "/whois", name: "WHOIS / IP", icon: Globe },
-			{ path: "/domain", name: "Domain Whois", icon: Search },
-		],
-	},
-
-	// --- Security ---
-	{
-		title: "Security",
-		items: [
-			{ path: "/password", name: "Password Gen", icon: KeyRound },
-			{ path: "/2fa", name: "2FA Code", icon: Shield },
-		],
-	},
-
-	// --- QR & Links ---
-	{
-		title: "QR & Links",
-		items: [
-			{ path: "/qr-gen", name: "QR Generator", icon: QrCode },
-			{ path: "/qr-scan", name: "QR Scanner", icon: Scan },
-			{ path: "/vietqr", name: "VietQR Gen", icon: Coins },
-			{ path: "/shorten", name: "Shorten Link", icon: LinkIcon },
-		],
-	},
-];
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const LayoutInner: React.FC<LayoutProps> = ({ children }) => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isDonateOpen, setIsDonateOpen] = useState(false);
 	const location = useLocation();
 	const navigate = useNavigate();
+	const { lang, toggleLang, t } = useI18n();
+	const { theme, compact } = useSettings();
+
+	const RECENTS_KEY = "at_tools_recent";
+	const toolGroups = getToolGroups(t);
 
 	// Global Hotkey: Alt + N to open Notepad
 	useEffect(() => {
@@ -324,14 +257,45 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [navigate]);
 
+	useEffect(() => {
+		const path = location.pathname;
+		const excluded = ["/", "/browse", "/favorites", "/recent", "/settings"];
+		if (!path || excluded.includes(path)) return;
+		try {
+			const stored = localStorage.getItem(RECENTS_KEY);
+			const list = stored ? (JSON.parse(stored) as string[]) : [];
+			const next = [path, ...list.filter((p) => p !== path)].slice(0, 12);
+			localStorage.setItem(RECENTS_KEY, JSON.stringify(next));
+		} catch {
+			// ignore
+		}
+	}, [location.pathname]);
+
+	const navGroups = [
+		{
+			title: t("Main", "Chính"),
+			items: [
+				{ path: "/browse", name: t("Browse", "Duyệt"), icon: LayoutGrid },
+				{ path: "/favorites", name: t("Favorites", "Yêu thích"), icon: Star },
+				{ path: "/recent", name: t("Recently Used", "Dùng gần đây"), icon: Clock },
+				{ path: "/settings", name: t("Settings", "Cài đặt"), icon: Sliders },
+			],
+		},
+		...toolGroups,
+	];
+
 	return (
-		<div className="h-screen overflow-hidden bg-dark-900 text-gray-200 flex font-sans selection:bg-neon-purple selection:text-white">
+		<div
+			className={`h-screen overflow-hidden bg-dark-900 text-gray-200 flex font-sans selection:bg-neon-purple selection:text-white ${
+				theme === "light" ? "theme-light" : "dark"
+			}`}
+		>
 			{/* Mobile Menu Buttons */}
 			<div className="lg:hidden fixed top-4 right-4 z-50 flex gap-2">
 				<button
 					className="p-2 bg-dark-800 rounded-lg border border-gray-800 text-yellow-500 shadow-lg shadow-black/50"
 					onClick={() => navigate("/notepad")}
-					title="Quick Note">
+					title={t("Quick Note", "Ghi chú nhanh")}>
 					<FileText />
 				</button>
 				<button
@@ -345,7 +309,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 			<aside
 				className={`
         fixed lg:static inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out
-        bg-dark-900 border-r border-dark-700 p-4 flex flex-col
+        bg-dark-900 border-r border-dark-700 ${compact ? "p-2" : "p-3"} flex flex-col
         ${
 			isMobileMenuOpen
 				? "translate-x-0"
@@ -366,11 +330,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 							v1.0.0
 						</p>
 					</div>
+					<button
+						onClick={toggleLang}
+						className="px-2 py-1 text-xs font-bold rounded-md border border-dark-700 bg-dark-800 text-gray-300 hover:text-white hover:bg-dark-700">
+						{lang === "vi" ? "VI" : "EN"}
+					</button>
 					{/* Desktop Quick Note Button */}
 					<button
 						onClick={() => navigate("/notepad")}
 						className="p-2 bg-dark-800 text-gray-400 hover:text-yellow-500 hover:bg-dark-700 rounded-lg transition-colors border border-transparent hover:border-dark-600"
-						title="Quick Note (Alt + N)">
+						title={t("Quick Note (Alt + N)", "Ghi chú nhanh (Alt + N)")}>
 						<FileText size={18} />
 					</button>
 				</div>
@@ -419,10 +388,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 				<div className="mt-auto pt-6 border-t border-dark-800">
 					<div className="p-4 rounded-xl bg-gradient-to-br from-dark-800 to-dark-900 border border-dark-700 text-center">
 						<h3 className="text-sm font-bold text-white mb-1">
-							Support AT ☕
+							{t("Support AT ☕", "Ủng hộ AT ☕")}
 						</h3>
 						<p className="text-xs text-gray-400 mb-3">
-							Keep the tools free & alive!
+							{t("Keep the tools free & alive!", "Giữ công cụ miễn phí và duy trì!")}
 						</p>
 						<button
 							onClick={() => {
@@ -431,15 +400,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 							}}
 							className="w-full py-2 bg-neon-purple/10 hover:bg-neon-purple/20 text-neon-purple border border-neon-purple/30 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2">
 							<Heart size={14} className="fill-neon-purple" />{" "}
-							DONATE
+							{t("DONATE", "ỦNG HỘ")}
 						</button>
 					</div>
 				</div>
 			</aside>
 
 			{/* Main Content */}
-			<main className="flex-1 h-screen overflow-y-auto bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-dark-800 via-dark-900 to-black">
-				<div className="max-w-7xl mx-auto p-6 lg:p-10 pb-20">
+			<main
+				className={`flex-1 h-screen overflow-y-auto ${
+					theme === "light"
+						? "bg-gray-100"
+						: "bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-dark-800 via-dark-900 to-black"
+				}`}>
+				<div
+					className={`max-w-7xl mx-auto ${
+						compact ? "p-3 lg:p-4 pb-8" : "p-4 lg:p-6 pb-12"
+					}`}>
+					<ToolGuide path={location.pathname} />
 					{children}
 				</div>
 			</main>
@@ -460,5 +438,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 		</div>
 	);
 };
+
+const Layout: React.FC<LayoutProps> = ({ children }) => (
+	<I18nProvider>
+		<SettingsProvider>
+			<LayoutInner>{children}</LayoutInner>
+		</SettingsProvider>
+	</I18nProvider>
+);
 
 export default Layout;

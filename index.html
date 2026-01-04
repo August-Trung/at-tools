@@ -6,6 +6,8 @@
     <title>AT Tools - MMO Toolkit</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/png" href="/ver-bigger-logo.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#0a0a0a" />
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script>
@@ -44,11 +46,98 @@
       }
     </script>
     <style>
+      :root {
+        --at-bg: #050505;
+        --at-fg: #e0e0e0;
+      }
+      .theme-light {
+        --at-bg: #f5f5f5;
+        --at-fg: #111827;
+      }
       body {
-        background-color: #050505;
-        color: #e0e0e0;
+        background-color: var(--at-bg);
+        color: var(--at-fg);
         overflow-x: hidden;
       }
+      .theme-light .bg-dark-900 { background-color: #ffffff !important; }
+      .theme-light .bg-dark-800 { background-color: #f8fafc !important; }
+      .theme-light .bg-dark-700 { background-color: #f1f5f9 !important; }
+      .theme-light .bg-dark-600 { background-color: #e2e8f0 !important; }
+      .theme-light .bg-black { background-color: #ffffff !important; }
+      .theme-light .bg-black\/20 { background-color: rgba(15, 23, 42, 0.06) !important; }
+      .theme-light .bg-black\/30 { background-color: rgba(15, 23, 42, 0.08) !important; }
+      .theme-light .bg-black\/50 { background-color: rgba(15, 23, 42, 0.1) !important; }
+      .theme-light .bg-black\/80 { background-color: rgba(15, 23, 42, 0.55) !important; }
+      .theme-light .bg-white\/5 { background-color: rgba(15, 23, 42, 0.04) !important; }
+      .theme-light .bg-white\/10 { background-color: rgba(15, 23, 42, 0.06) !important; }
+      .theme-light .bg-zinc-950 { background-color: #f8fafc !important; }
+      .theme-light .bg-zinc-900 { background-color: #f1f5f9 !important; }
+      .theme-light .bg-zinc-800 { background-color: #e2e8f0 !important; }
+      .theme-light .bg-zinc-700 { background-color: #cbd5e1 !important; }
+      .theme-light .bg-zinc-950\/50 { background-color: rgba(248, 250, 252, 0.7) !important; }
+      .theme-light .bg-zinc-900\/50 { background-color: rgba(241, 245, 249, 0.7) !important; }
+      .theme-light .bg-zinc-800\/50 { background-color: rgba(226, 232, 240, 0.7) !important; }
+      .theme-light .bg-zinc-800\/60 { background-color: rgba(226, 232, 240, 0.75) !important; }
+      .theme-light .bg-slate-800\/50 { background-color: rgba(241, 245, 249, 0.75) !important; }
+      .theme-light .bg-slate-700\/50 { background-color: rgba(226, 232, 240, 0.8) !important; }
+      .theme-light .bg-slate-700 { background-color: #e2e8f0 !important; }
+      .theme-light .bg-slate-600 { background-color: #cbd5e1 !important; }
+      .theme-light .bg-dark-900\/50 { background-color: rgba(255, 255, 255, 0.7) !important; }
+      .theme-light .bg-dark-900\/40 { background-color: rgba(255, 255, 255, 0.65) !important; }
+      .theme-light .bg-dark-900\/80 { background-color: rgba(255, 255, 255, 0.92) !important; }
+      .theme-light .bg-dark-700\/50 { background-color: rgba(241, 245, 249, 0.7) !important; }
+      .theme-light .bg-dark-700\/30 { background-color: rgba(241, 245, 249, 0.5) !important; }
+      .theme-light .bg-dark-700\/80 { background-color: rgba(241, 245, 249, 0.9) !important; }
+      .theme-light .bg-dark-800\/30 { background-color: rgba(226, 232, 240, 0.5) !important; }
+      .theme-light .bg-dark-800\/50 { background-color: rgba(226, 232, 240, 0.7) !important; }
+      .theme-light .border-dark-700 { border-color: #e2e8f0 !important; }
+      .theme-light .border-dark-700\/50 { border-color: rgba(226, 232, 240, 0.8) !important; }
+      .theme-light .border-dark-600\/50 { border-color: rgba(203, 213, 225, 0.8) !important; }
+      .theme-light .border-dark-600 { border-color: #cbd5e1 !important; }
+      .theme-light .border-dark-800 { border-color: #e2e8f0 !important; }
+      .theme-light .border-slate-700 { border-color: #cbd5e1 !important; }
+      .theme-light .border-slate-600 { border-color: #cbd5e1 !important; }
+      .theme-light .border-white\/10 { border-color: rgba(148, 163, 184, 0.3) !important; }
+      .theme-light .border-zinc-800 { border-color: #e2e8f0 !important; }
+      .theme-light .border-zinc-700 { border-color: #d1d5db !important; }
+      .theme-light .border-zinc-800\/60 { border-color: rgba(226, 232, 240, 0.9) !important; }
+      .theme-light .border-zinc-800\/50 { border-color: rgba(226, 232, 240, 0.8) !important; }
+      .theme-light .border-zinc-700\/50 { border-color: rgba(226, 232, 240, 0.7) !important; }
+      .theme-light .text-white { color: #0f172a !important; }
+      .theme-light .text-white\/80 { color: rgba(15, 23, 42, 0.8) !important; }
+      .theme-light .text-gray-200 { color: #0f172a !important; }
+      .theme-light .text-gray-300 { color: #1f2937 !important; }
+      .theme-light .text-gray-400 { color: #334155 !important; }
+      .theme-light .text-gray-500 { color: #475569 !important; }
+      .theme-light .text-gray-600 { color: #64748b !important; }
+      .theme-light .text-gray-700 { color: #334155 !important; }
+      .theme-light .text-gray-800 { color: #0f172a !important; }
+      .theme-light .text-zinc-200 { color: #0f172a !important; }
+      .theme-light .text-zinc-300 { color: #1f2937 !important; }
+      .theme-light .text-zinc-400 { color: #334155 !important; }
+      .theme-light .text-zinc-500 { color: #475569 !important; }
+      .theme-light .text-zinc-600 { color: #64748b !important; }
+      .theme-light .placeholder-gray-600::placeholder { color: #94a3b8 !important; }
+      .theme-light .placeholder-gray-400::placeholder { color: #94a3b8 !important; }
+      .theme-light .from-dark-800 { --tw-gradient-from: #f8fafc !important; --tw-gradient-to: rgba(248, 250, 252, 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+      .theme-light .from-dark-900 { --tw-gradient-from: #ffffff !important; --tw-gradient-to: rgba(255, 255, 255, 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+      .theme-light .via-dark-900 { --tw-gradient-stops: var(--tw-gradient-from), #f1f5f9, var(--tw-gradient-to) !important; }
+      .theme-light .to-dark-900 { --tw-gradient-to: #e2e8f0 !important; }
+      .theme-light .to-dark-800 { --tw-gradient-to: #f1f5f9 !important; }
+      .theme-light .to-dark-700 { --tw-gradient-to: #e2e8f0 !important; }
+      .theme-light .to-black { --tw-gradient-to: #e2e8f0 !important; }
+      .theme-light .bg-gradient-to-br { background-image: linear-gradient(135deg, #ffffff, #e2e8f0) !important; }
+      .theme-light .bg-gradient-to-r { background-image: linear-gradient(90deg, #ffffff, #e2e8f0) !important; }
+      .theme-light .bg-gradient-to-b { background-image: linear-gradient(180deg, #ffffff, #e2e8f0) !important; }
+      .theme-light .markdown-preview { color: #0f172a; }
+      .theme-light .markdown-preview h1 { color: #0f172a; border-bottom-color: #e2e8f0; }
+      .theme-light .markdown-preview h2,
+      .theme-light .markdown-preview h3 { color: #1f2937; }
+      .theme-light .markdown-preview blockquote { border-left-color: #94a3b8; color: #475569; background: rgba(15, 23, 42, 0.04); }
+      .theme-light .markdown-preview code { background: #f8fafc; color: #0f766e; border-color: #e2e8f0; }
+      .theme-light .markdown-preview pre { background: #f8fafc; border-color: #e2e8f0; }
+      .theme-light .markdown-preview th { background-color: #f1f5f9; color: #0f172a; }
+      .theme-light .markdown-preview th, .theme-light .markdown-preview td { border-color: #e2e8f0; }
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
@@ -63,6 +152,15 @@
       }
       ::-webkit-scrollbar-thumb:hover {
         background: #b026ff;
+      }
+      .theme-light ::-webkit-scrollbar-track {
+        background: #e2e8f0;
+      }
+      .theme-light ::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+      }
+      .theme-light ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
       }
 
       /* Markdown Preview Styles */
